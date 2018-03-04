@@ -1,8 +1,6 @@
 # LightGbmDotNet
 
-A .NET wrapper for the LightGBM machine learning library, including GPU support.
-
-Allows .NET developers to use the <https://github.com/Microsoft/LightGBM> machine learning library on Windows.
+A .NET wrapper for the [LightGBM](https://github.com/Microsoft/LightGBM) machine learning library, including GPU support.
 
 
 LightGBM is one of the leading Gradient Boosting solutions, provided open source by Microsoft.
@@ -35,3 +33,4 @@ MIT
 - Please be aware this wrapper uses files to transfer data to LightGBM and may write a considerable amount of data on your disk
 - Don't forget to dispose the LightGbm instance after use to make sure the created files are cleaned up
 - To use GPU acceleration (only provided for NVIDIA cards) pass `true` to the constructor of LightGbm class
+- Works only on Windows, 64 Bit, .NET Framework 4.6.1 or higher
