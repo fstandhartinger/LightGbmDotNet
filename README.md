@@ -15,7 +15,7 @@ using(var lightGbm = new LightGbm())
 {
 	lightGbm.Train(trainingData); //optionally pass parameters
 	var predictions = lightGbm.Predict(predictionData); //returns an array of predictions
-    lightGbm.SaveModel("somefile.txt"); //for later reuse of the trained machine learning model without retraining
+    	lightGbm.SaveModel("somefile.txt"); //for later reuse of the trained machine learning model without retraining
 }
 ```
 
