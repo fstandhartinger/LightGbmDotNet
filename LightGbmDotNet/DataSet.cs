@@ -10,10 +10,11 @@ namespace LightGbmDotNet
 {
     public class DataSet
     {
-        private DataSet(string filePath, int columnCount)
+        private DataSet(string filePath, int columnCount, int rowCount)
         {
             FilePath = filePath;
             ColumnCount = columnCount;
+            RowCount = rowCount;
         }
 
         public string FilePath { get; private set; }
@@ -31,6 +32,7 @@ namespace LightGbmDotNet
         }
 
         public int ColumnCount { get; }
+        public int RowCount { get; }
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern int GetShortPathName(String pathName, StringBuilder shortName, int cbShortName);
@@ -45,13 +47,26 @@ namespace LightGbmDotNet
                 filePath = Path.Combine(d.FullName, "DataSet_" + ++dataSetCounter + ".csv");
             } while (File.Exists(filePath));
 
-            var colCount = WriteCsv(filePath, rows);
-            return new DataSet(filePath, colCount);
+            var rowAndColumnCount = WriteCsv(filePath, rows);
+            return new DataSet(filePath, rowAndColumnCount.ColumnCount, rowAndColumnCount.RowCount);
         }
 
-        private static int WriteCsv(string path, IEnumerable<IEnumerable<double>> rows)
+        private class RowAndColumnCount
+        {
+            public RowAndColumnCount(int columnCount, int rowCount)
+            {
+                ColumnCount = columnCount;
+                RowCount = rowCount;
+            }
+
+            public int ColumnCount { get; }
+            public int RowCount { get; }
+        }
+
+        private static RowAndColumnCount WriteCsv(string path, IEnumerable<IEnumerable<double>> rows)
         {
             var colCount = 0;
+            var rowCount = 0;
             var oldCulture = Thread.CurrentThread.CurrentCulture;
             try
             {
@@ -60,6 +75,7 @@ namespace LightGbmDotNet
                 {
                     foreach (var row in rows.StartReadingAhead())
                     {
+                        rowCount++;
                         var hasPredecessorColumn = false;
                         colCount = 0;
                         foreach (var value in row)
@@ -76,7 +92,7 @@ namespace LightGbmDotNet
                     }
                 }
 
-                return colCount;
+                return new RowAndColumnCount(colCount, rowCount);
             }
             finally
             {

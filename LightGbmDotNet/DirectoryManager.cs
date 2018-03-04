@@ -113,6 +113,7 @@ namespace LightGbmDotNet
         {
             lock (lockObj)
             {
+                DirectoryInfo tempDirectory;
                 string dir;
                 if (explicitlyDefinedTempDir == null)
                 {
@@ -121,14 +122,18 @@ namespace LightGbmDotNet
                     {
                         dir = Path.Combine(TempDir.FullName, rnd.Next(1000).ToString("0000"));
                     } while (Directory.Exists(dir));
+                    tempDirectory = new DirectoryInfo(dir);
                     Directory.CreateDirectory(dir);
                 }
                 else
                 {
                     dir = explicitlyDefinedTempDir;
+                    tempDirectory = new DirectoryInfo(dir);
                     if (!Directory.Exists(dir))
                         Directory.CreateDirectory(dir);
                 }
+                keepAliveDirectories.Add(tempDirectory);
+                File.WriteAllText(GetKeepAliveFilePath(tempDirectory).FullName, string.Empty);
 
                 var assembly = typeof(LightGbm).Assembly;
                 var version = useGpu ? "GPU" : "CPU";
@@ -141,9 +146,6 @@ namespace LightGbmDotNet
                     }
                 }
 
-                var tempDirectory = new DirectoryInfo(dir);
-                keepAliveDirectories.Add(tempDirectory);
-                File.WriteAllText(GetKeepAliveFilePath(tempDirectory).FullName, string.Empty);
                 return tempDirectory;
             }
         }
