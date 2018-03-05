@@ -31,7 +31,7 @@ MIT
 ### Notes
 
 - You might need to install the [Visual Studio 2015 C++ Redistributable](https://www.microsoft.com/en-ca/download/details.aspx?id=48145) on the machine you want to run this on. 
-- If you want to use GPU accelleracion you might need to install the (OpenCL implementation from NVIDIA (CUDA))[https://developer.nvidia.com/cuda-downloads]
+- If you want to use GPU accelleracion you might need to install the [OpenCL implementation from NVIDIA (CUDA)](https://developer.nvidia.com/cuda-downloads)
 - Please be aware this wrapper uses files to transfer data to LightGBM and may write a considerable amount of data on your disk
 - Don't forget to dispose the LightGbm instance after use to make sure the created files are cleaned up
 - To use GPU acceleration (only provided for NVIDIA cards) pass `true` to the constructor of LightGbm class
