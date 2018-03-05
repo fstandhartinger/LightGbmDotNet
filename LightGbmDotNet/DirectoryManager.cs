@@ -98,7 +98,27 @@ namespace LightGbmDotNet
             lock (lockObj)
             {
                 keepAliveDirectories.Remove(d);
-                d.Delete(true);
+                try
+                {
+                    var files = d.GetFiles("*.*", SearchOption.AllDirectories);
+                    foreach (var f in files)
+                    {
+                        try
+                        {
+                            f.Delete();
+                        }
+                        catch
+                        {
+                            //ignore, file still in use
+                        }
+                    }
+
+                    d.Delete(true);
+                }
+                catch
+                {
+                    //ignore, still in use, clean as much as possible
+                }
             }
         }
 

@@ -19,6 +19,7 @@ namespace LightGbmDotNet
         private readonly bool useGpu;
         private readonly object lockObj = new object();
         private DataSet trainingDataSet;
+        private Process runningProcess;
 
         /// <summary>
         /// An instance of the LightGBM machine learning 
@@ -269,26 +270,27 @@ namespace LightGbmDotNet
         private void RunProcess(ProcessStartInfo psi)
         {
             Exception exceptionDuringRun = null;
-            var p = Process.Start(psi);
-            if (p == null)
+            runningProcess = Process.Start(psi);
+            if (runningProcess == null)
                 throw new LightGbmException("LightGBM process could not be started, see property Log of this object for details", LogText);
-            p.ErrorDataReceived += (s, e) =>
+            runningProcess.ErrorDataReceived += (s, e) =>
             {
                 if (e.Data == null) return;
                 exceptionDuringRun = new Exception(e.Data);
             };
-            p.OutputDataReceived += (s, e) =>
+            runningProcess.OutputDataReceived += (s, e) =>
             {
                 if (e.Data == null) return;
                 Log(e.Data);
             };
-            p.BeginErrorReadLine();
-            p.BeginOutputReadLine();
-            p.WaitForExit();
+            runningProcess.BeginErrorReadLine();
+            runningProcess.BeginOutputReadLine();
+            runningProcess.WaitForExit();
             if (exceptionDuringRun != null)
                 throw new LightGbmException("Error during LightGBM run, see properties InnerException and Log of this object for details", LogText, exceptionDuringRun);
-            if (p.ExitCode != 0)
+            if (runningProcess.ExitCode != 0)
                 throw new LightGbmException("Error during LightGBM run, see property Log of this object for details", LogText);
+            runningProcess = null;
         }
 
         private void Log(string text)
@@ -334,6 +336,9 @@ namespace LightGbmDotNet
         {
             try
             {
+                if (runningProcess != null && runningProcess.HasExited)
+                    runningProcess.Kill();
+
                 var d = tempDirectory;
                 tempDirectory = null;
                 DirectoryManager.Instance.CleanupDirectory(d);
