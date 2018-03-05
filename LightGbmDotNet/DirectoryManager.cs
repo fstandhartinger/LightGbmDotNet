@@ -17,8 +17,6 @@ namespace LightGbmDotNet
 
         private DirectoryManager()
         {
-            StartHeartbeat();
-            StartAutoCleanup();
             TempDir = new DirectoryInfo(Path.Combine(Path.GetTempPath(), TempDirName));
         }
 
