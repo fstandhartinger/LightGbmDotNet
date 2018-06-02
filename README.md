@@ -40,7 +40,7 @@ MIT
 ### Alternatives
 
 Not tested myself so far:
-- [XGBoost wrapper in SharpLearning](https://github.com/mdabros/SharpLearning/wiki/Using-SharpLearning.XGBoost) => highly reccomending you to check this out
+- [XGBoost wrapper in SharpLearning](https://github.com/mdabros/SharpLearning/wiki/Using-SharpLearning.XGBoost) => highly recommending you to check this out
 - [LightGBMSharp](https://github.com/ttustonic/LightGBMSharp) => looks a bit basic so far
 
 Both libraries work using in process / in memory data transfer to / from the native machine learning libraries, which should lead to superior performance compared to LightGbmDotNet
