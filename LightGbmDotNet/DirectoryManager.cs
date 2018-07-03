@@ -53,7 +53,8 @@ namespace LightGbmDotNet
                         foreach (var d in keepAliveDirectories)
                         {
                             var keepAliveFilePath = GetKeepAliveFilePath(d);
-                            keepAliveFilePath.LastWriteTime = DateTime.Now;
+                            if (keepAliveFilePath.Exists)
+                                keepAliveFilePath.LastWriteTime = DateTime.Now;
                         }
                         if (dir != TempDir && keepAliveDirectories.Count == 0)
                             break;
@@ -79,11 +80,18 @@ namespace LightGbmDotNet
                             if (!dir.Exists) continue;
                             foreach (var d in dir.GetDirectories())
                             {
-                                if (keepAliveDirectories.Contains(d))
-                                    continue;
-                                var keepAliveFilePath = GetKeepAliveFilePath(d);
-                                if ((DateTime.Now - keepAliveFilePath.LastWriteTime).TotalMinutes > 2)
-                                    CleanupDirectory(d); //seems to be from an older, cancelled run, cleanup
+                                try
+                                {
+                                    if (keepAliveDirectories.Contains(d))
+                                        continue;
+                                    var keepAliveFilePath = GetKeepAliveFilePath(d);
+                                    if ((DateTime.Now - keepAliveFilePath.LastWriteTime).TotalMinutes > 2)
+                                        CleanupDirectory(d); //seems to be from an older, cancelled run, cleanup
+                                }
+                                catch
+                                {
+                                    //nevermind
+                                }
                             }
                         }
                         Thread.Sleep(60 * 1000);
