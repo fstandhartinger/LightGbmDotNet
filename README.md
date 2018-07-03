@@ -33,5 +33,14 @@ MIT
 - You might need to install the [Visual Studio 2015 C++ Redistributable](https://www.microsoft.com/en-ca/download/details.aspx?id=48145) on the machine you want to run this on. 
 - Please be aware this wrapper uses files to transfer data to LightGBM and may write a considerable amount of data on your disk
 - Don't forget to dispose the LightGbm instance after use to make sure the created files are cleaned up
-- To use GPU acceleration (only provided for NVIDIA cards) pass `true` to the constructor of LightGbm class
-- Works only on Windows, 64 Bit, .NET Framework 4.6.1 or higher
+- To use GPU acceleration (only provided for NVIDIA cards) pass `true` to the constructor of LightGbm class. If it crashes you might need to install the [OpenCL implementation from NVIDIA (CUDA)](https://developer.nvidia.com/cuda-downloads).
+- Works only on Windows, 64 Bit, .NET Framework 4.6.1 or higher (should also work with lower .NET Framework versions if compiled with it)
+
+
+### Alternatives
+
+Not tested myself so far:
+- [XGBoost wrapper in SharpLearning](https://github.com/mdabros/SharpLearning/wiki/Using-SharpLearning.XGBoost) => highly recommending you to check this out
+- [LightGBMSharp](https://github.com/ttustonic/LightGBMSharp) => looks a bit basic so far
+
+Both libraries work using in process / in memory data transfer to / from the native machine learning libraries, which should lead to superior performance compared to LightGbmDotNet
